@@ -3,6 +3,7 @@ package com.codepath.apps.erastustweet;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,7 @@ public class TimelineActivity extends AppCompatActivity {
     RecyclerView timelineRecyclerView;
     TweetsAdapter tweetsAdapter;
     List<Tweet> tweets;
+    SwipeRefreshLayout timelineSwipeRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +35,30 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timeline);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Timeline");
 
-        twitterClient = TwitterApp.getRestClient(this);
         timelineRecyclerView = findViewById(R.id.timelineRecyclerView);
+        timelineSwipeRefresh = findViewById(R.id.timelineSwipeRefresh);
+
+        twitterClient = TwitterApp.getRestClient(this);
         tweets = new ArrayList<>();
         tweetsAdapter = new TweetsAdapter(this, tweets);
+
         timelineRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         timelineRecyclerView.setAdapter(tweetsAdapter);
+
+
+        // set the loading indicator to cycle between four colors
+        timelineSwipeRefresh.setColorSchemeResources(R.color.holo_red_dark,
+                R.color.holo_blue_dark, R.color.DarkSalmon, R.color.android_green);
+
+        timelineSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.i(TAG, "Fetching new data.");
+                populateHomeTimeline();
+            }
+        });
+
+        // send get tweets request and populate timeline recycle view
         populateHomeTimeline();
 
     }
@@ -51,8 +71,10 @@ public class TimelineActivity extends AppCompatActivity {
                 JSONArray jsonArray = json.jsonArray;
                 try {
                     Log.i(TAG, "Content" + json.toString());
-                    tweets.addAll(Tweet.fromJsonArray(jsonArray));
-                    tweetsAdapter.notifyDataSetChanged();
+                    tweetsAdapter.clear();
+                    tweetsAdapter.addAll(Tweet.fromJsonArray(jsonArray));
+                    // refreshing is finished and so we no longer need to show `loading` indicator
+                    timelineSwipeRefresh.setRefreshing(false);
                 } catch (JSONException e) {
                     Log.e(TAG, "JSONException", e);
                 }
