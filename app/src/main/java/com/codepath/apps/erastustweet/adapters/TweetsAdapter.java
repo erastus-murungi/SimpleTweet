@@ -36,14 +36,11 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
     @Override
     public void onBindViewHolder(@NonNull TweetsViewHolder holder, int position) {
         // get the tweet at index `position` and bind it to a (view holder) row
-
         holder.bind(tweets.get(position));
     }
 
     @Override
-    public int getItemCount() {
-        return tweets.size();
-    }
+    public int getItemCount() { return tweets.size(); }
 
     // A ViewHolder describes an item view and metadata about its place within the RecyclerView.
     public class TweetsViewHolder extends RecyclerView.ViewHolder {
@@ -59,7 +56,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
         }
 
         public void bind(Tweet tweet) {
-            screenNameTextView.setText(tweet.user.screenName);
+            screenNameTextView.setText(String.format("@%s", tweet.user.screenName));
             tweetBodyTextView.setText(tweet.body);
             loadRoundImage(context, tweet.user.profilePictureUrl, profilePictureImageView);
         }

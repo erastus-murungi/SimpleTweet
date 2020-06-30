@@ -13,7 +13,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <activity android:name="com.codepath.apps.erastustweet.TimelineActivity"></activity>
+        <activity android:name="com.codepath.apps.erastustweet.TimelineActivity" />
         <activity
             android:name="com.codepath.apps.erastustweet.LoginActivity"
             android:label="@string/app_name"
