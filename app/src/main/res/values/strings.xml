@@ -5,5 +5,9 @@
     <string name="login_label">Log in</string>
     <string name="intent_scheme">oauth</string>
     <string name="intent_host">cprest</string>
+    <string name="screen_name">\@ %s</string>
+    <string name="sample_screen_name">screen_name</string>
+    <string name="sample_tweet">This is a sample tweet. This is a sample tweet.</string>
+    <string name="user_screen_name">User screen name</string>
 
 </resources>

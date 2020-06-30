@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate.models;
+package com.codepath.apps.erastustweet.models;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Tweet {
-    public String tweetBody;
+    public String body;
     public String createdAt;
     public User user;
 
@@ -17,7 +17,7 @@ public class Tweet {
 
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
         Tweet tweet = new Tweet();
-        tweet.tweetBody = jsonObject.getString("text");
+        tweet.body = jsonObject.getString("text");
         tweet.createdAt = jsonObject.getString("created_at");
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         return tweet;
