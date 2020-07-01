@@ -17,5 +17,6 @@
     <string name="what_s_happening">What\'s happening?</string>
     <string name="tweet">Tweet</string>
     <string name="zero">0</string>
+    <string name="exit_press_back_twice_message">Press back twice twice to exit</string>
 
 </resources>

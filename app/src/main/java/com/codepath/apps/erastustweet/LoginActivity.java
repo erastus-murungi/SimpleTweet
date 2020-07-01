@@ -63,4 +63,10 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 		getClient().connect();
 	}
 
+	@Override
+	public void onBackPressed() {
+		finish();
+	}
+
+
 }

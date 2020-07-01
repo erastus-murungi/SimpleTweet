@@ -31,11 +31,15 @@ import okhttp3.Headers;
 public class TimelineActivity extends AppCompatActivity {
     public static final String TAG = "TimelineActivity";
     public static final int REQUEST_CODE = 20;
-    TwitterClient twitterClient;
-    RecyclerView timelineRecyclerView;
-    TweetsAdapter tweetsAdapter;
-    List<Tweet> tweets;
-    SwipeRefreshLayout timelineSwipeRefresh;
+    public static final long TIME_INTERVAL = 2000L;
+
+    private long mBackPressed = 0L;
+
+    private TwitterClient mTwitterClient;
+    private RecyclerView mTimelineRecyclerViewer;
+    private TweetsAdapter mTweetsAdapter;
+    private List<Tweet> mTweets;
+    private SwipeRefreshLayout mTimelineSwipeRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,28 +47,28 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timeline);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Timeline");
 
-        timelineRecyclerView = findViewById(R.id.timelineRecyclerView);
-        timelineSwipeRefresh = findViewById(R.id.timelineSwipeRefresh);
+        mTimelineRecyclerViewer = findViewById(R.id.recycler_view_timeline);
+        mTimelineSwipeRefresh = findViewById(R.id.swipe_refresh_timeline);
 
-        twitterClient = TwitterApp.getRestClient(this);
-        tweets = new ArrayList<>();
-        tweetsAdapter = new TweetsAdapter(this, tweets);
+        mTwitterClient = TwitterApp.getRestClient(this);
+        mTweets = new ArrayList<>();
+        mTweetsAdapter = new TweetsAdapter(this, mTweets);
 
-        timelineRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        timelineRecyclerView.setAdapter(tweetsAdapter);
+        mTimelineRecyclerViewer.setLayoutManager(new LinearLayoutManager(this));
+        mTimelineRecyclerViewer.setAdapter(mTweetsAdapter);
 
         // add a horizontal separator between rows
-        timelineRecyclerView.addItemDecoration(
-                new DividerItemDecoration(timelineRecyclerView.getContext(),
+        mTimelineRecyclerViewer.addItemDecoration(
+                new DividerItemDecoration(mTimelineRecyclerViewer.getContext(),
                         DividerItemDecoration.VERTICAL));
 
 
 
         // set the loading indicator to cycle between four colors
-        timelineSwipeRefresh.setColorSchemeResources(R.color.holo_red_dark,
+        mTimelineSwipeRefresh.setColorSchemeResources(R.color.holo_red_dark,
                 R.color.holo_blue_dark, R.color.DarkSalmon, R.color.android_green);
 
-        timelineSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mTimelineSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Log.i(TAG, "Fetching new data.");
@@ -103,26 +107,27 @@ public class TimelineActivity extends AppCompatActivity {
             }
             else {
                 Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
-                tweets.add(0, tweet);
-                tweetsAdapter.notifyItemInserted(0);
-                timelineRecyclerView.smoothScrollToPosition(0);
+                mTweets.add(0, tweet);
+                mTweetsAdapter.notifyItemInserted(0);
+                mTimelineRecyclerViewer.smoothScrollToPosition(0);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void populateHomeTimeline() {
-        twitterClient.getHomeTimeline(new JsonHttpResponseHandler() {
+        mTwitterClient.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 Log.i(TAG, "Json Success!");
                 JSONArray jsonArray = json.jsonArray;
                 try {
                     Log.i(TAG, "Content" + json.toString());
-                    tweetsAdapter.clear();
-                    tweetsAdapter.addAll(Tweet.fromJsonArray(jsonArray));
+                    mTweetsAdapter.clear();
+                    mTweetsAdapter.addAll(Tweet.fromJsonArray(jsonArray));
+
                     // refreshing is finished and so we no longer need to show `loading` indicator
-                    timelineSwipeRefresh.setRefreshing(false);
+                    mTimelineSwipeRefresh.setRefreshing(false);
                 } catch (JSONException e) {
                     Log.e(TAG, "JSONException", e);
                 }
@@ -133,5 +138,16 @@ public class TimelineActivity extends AppCompatActivity {
                 Log.e(TAG, "Json Failure!" + response, throwable);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
+            super.onBackPressed();
+            return;
+        } else {
+            Toast.makeText(getBaseContext(), getString(R.string.exit_press_back_twice_message), Toast.LENGTH_SHORT).show();
+        }
+        mBackPressed = System.currentTimeMillis();
     }
 }
