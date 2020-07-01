@@ -27,6 +27,10 @@ android {
         lintConfig rootProject.file('gradle/lint.xml')
     }
 
+    defaultConfig {
+        vectorDrawables.useSupportLibrary = true
+    }
+
     buildTypes {
         release {
             minifyEnabled false

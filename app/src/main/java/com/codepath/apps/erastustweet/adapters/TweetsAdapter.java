@@ -75,6 +75,9 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
             timestampTextView.setText(tweet.createdAt);
             nameTextView.setText(tweet.user.name);
             loadRoundImage(context, tweet.user.profilePictureUrl, profilePictureImageView);
+            if (!tweet.user.isVerified) {
+                verifiedBadgeImageView.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
