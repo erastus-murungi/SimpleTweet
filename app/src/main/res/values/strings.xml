@@ -13,5 +13,6 @@
     <string name="a_dot">.</string>
     <string name="user_name">user_name</string>
     <string name="verified_badge">Verified Badge</string>
+    <string name="compose">Compose</string>
 
 </resources>

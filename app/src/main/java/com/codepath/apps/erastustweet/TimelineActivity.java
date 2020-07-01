@@ -8,6 +8,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.codepath.apps.erastustweet.adapters.TweetsAdapter;
 import com.codepath.apps.erastustweet.models.Tweet;
@@ -68,6 +71,20 @@ public class TimelineActivity extends AppCompatActivity {
         // send get tweets request and populate timeline recycle view
         populateHomeTimeline();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.composeMenuItem) {
+            Toast.makeText(this, "Compose", Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void populateHomeTimeline() {
