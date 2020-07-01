@@ -11,14 +11,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import org.parceler.Parcel;
 
+
+@Parcel
 public class Tweet {
     public String body;
     public String createdAt;
     public User user;
 
-    public Tweet() {
-    }
+    public Tweet() {}
 
 
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {

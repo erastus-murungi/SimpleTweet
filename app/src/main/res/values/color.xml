@@ -209,4 +209,6 @@ Organized by: Willie Tsang
     <color name="YellowGreen">#9ACD32</color>
     <!-- z -->
 
+    <color name="RedHighlight">#99FF0000</color>
+
 </resources>
