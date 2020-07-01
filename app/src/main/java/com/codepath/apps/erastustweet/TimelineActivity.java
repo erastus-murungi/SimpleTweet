@@ -1,6 +1,7 @@
 package com.codepath.apps.erastustweet;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -44,6 +45,12 @@ public class TimelineActivity extends AppCompatActivity {
 
         timelineRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         timelineRecyclerView.setAdapter(tweetsAdapter);
+
+        // add a horizontal separator between rows
+        timelineRecyclerView.addItemDecoration(
+                new DividerItemDecoration(timelineRecyclerView.getContext(),
+                        DividerItemDecoration.VERTICAL));
+
 
 
         // set the loading indicator to cycle between four colors
