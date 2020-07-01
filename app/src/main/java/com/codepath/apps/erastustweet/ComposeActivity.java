@@ -20,29 +20,28 @@ import com.codepath.apps.erastustweet.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.json.JSONException;
-import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import okhttp3.Headers;
 
 public class ComposeActivity extends AppCompatActivity {
     public static final String TAG = "ComposeActivity";
-
     public static final int MAX_TWEET_CHARS = 140;
-    EditText composeTweetEditText;
-    Button composeTweetButton;
-    TwitterClient twitterClient;
-    TextView charCountTextView;
+
+    private EditText mComposeTweetEditText;
+    private Button mComposeTweetButton;
+    private TwitterClient mTwitterClient;
+    private TextView mCharCountTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
 
-        twitterClient = TwitterApp.getRestClient(this);
-        composeTweetButton = (Button) findViewById(R.id.button_compose_tweet);
-        composeTweetEditText = (EditText) findViewById(R.id.edit_text_compose_tweet);
-        charCountTextView = (TextView) findViewById(R.id.text_view_char_count);
+        mTwitterClient = TwitterApp.getRestClient(this);
+        mComposeTweetButton = (Button) findViewById(R.id.button_compose_tweet);
+        mComposeTweetEditText = (EditText) findViewById(R.id.edit_text_compose_tweet);
+        mCharCountTextView = (TextView) findViewById(R.id.text_view_char_count);
 
         setComposeTweetEditTextBehaviour();
         setComposeTweetButtonBehavior();
@@ -50,7 +49,7 @@ public class ComposeActivity extends AppCompatActivity {
     }
 
     private void setComposeTweetEditTextBehaviour() {
-        composeTweetEditText.addTextChangedListener(new TextWatcher() {
+        mComposeTweetEditText.addTextChangedListener(new TextWatcher() {
             // to prevent an infinite loop because TextWatcher is called
             // again inside the afterTextChanged method
             private boolean mChangedByTextWatcher = false;
@@ -62,7 +61,7 @@ public class ComposeActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 if (start + after > MAX_TWEET_CHARS) {
-                    composeTweetButton.setClickable(false);
+                    mComposeTweetButton.setClickable(false);
                 }
             }
 
@@ -71,20 +70,20 @@ public class ComposeActivity extends AppCompatActivity {
             // It is an error to attempt to make changes to s from this callback.
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String tweetBody = composeTweetEditText.getText().toString().trim();
+                String tweetBody = mComposeTweetEditText.getText().toString().trim();
                 if (tweetBody.length() > MAX_TWEET_CHARS) {
-                    composeTweetButton.setEnabled(false);
-                    charCountTextView.setTextColor(getColor(R.color.red));
+                    mComposeTweetButton.setEnabled(false);
+                    mCharCountTextView.setTextColor(getColor(R.color.red));
                     String length = "-" + (s.length() - MAX_TWEET_CHARS);
-                    charCountTextView.setText(length);
+                    mCharCountTextView.setText(length);
 
                 } else if (tweetBody.length() == 0) {
-                    composeTweetButton.setEnabled(false);
-                    charCountTextView.setText(0);
+                    mComposeTweetButton.setEnabled(false);
+                    mCharCountTextView.setText(0);
                 } else {
-                    composeTweetButton.setEnabled(true);
-                    charCountTextView.setTextColor(getColor(R.color.green));
-                    charCountTextView.setText(String.valueOf(s.length()));
+                    mComposeTweetButton.setEnabled(true);
+                    mCharCountTextView.setTextColor(getColor(R.color.green));
+                    mCharCountTextView.setText(String.valueOf(s.length()));
                 }
             }
 
@@ -97,15 +96,15 @@ public class ComposeActivity extends AppCompatActivity {
                     mChangedByTextWatcher = true;
 
                     // cursor position will be reset to 0, so save it
-                    int cursorPosition = composeTweetEditText.getSelectionStart();
+                    int cursorPosition = mComposeTweetEditText.getSelectionStart();
 
                     Spannable tweetColored = new SpannableString(s);
                     tweetColored.setSpan(new BackgroundColorSpan(getColor(R.color.RedHighlight)),
                             140, s.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
 
-                    composeTweetEditText.setText(tweetColored);
+                    mComposeTweetEditText.setText(tweetColored);
 
-                    composeTweetEditText.setSelection(cursorPosition);
+                    mComposeTweetEditText.setSelection(cursorPosition);
 
                     // release, so the TextWatcher can start to listen again.
                     mChangedByTextWatcher = false;
@@ -116,11 +115,11 @@ public class ComposeActivity extends AppCompatActivity {
     }
 
     private void setComposeTweetButtonBehavior() {
-        composeTweetButton.setOnClickListener(new View.OnClickListener() {
+        mComposeTweetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String content = composeTweetEditText.getText().toString();
-                twitterClient.publishTweet(content, new JsonHttpResponseHandler() {
+                String content = mComposeTweetEditText.getText().toString();
+                mTwitterClient.publishTweet(content, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         Log.i(TAG, "Tweet published successfully");

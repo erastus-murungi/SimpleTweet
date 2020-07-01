@@ -13,7 +13,7 @@ import com.codepath.oauth.OAuthLoginActionBarActivity;
 
 public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 
-	SampleModelDao sampleModelDao;
+	private SampleModelDao mSampleModelDao;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,12 +23,12 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 		final SampleModel sampleModel = new SampleModel();
 		sampleModel.setName("CodePath");
 
-		sampleModelDao = ((TwitterApp) getApplicationContext()).getMyDatabase().sampleModelDao();
+		mSampleModelDao = ((TwitterApp) getApplicationContext()).getMyDatabase().sampleModelDao();
 
 		AsyncTask.execute(new Runnable() {
 			@Override
 			public void run() {
-				sampleModelDao.insertModel(sampleModel);
+				mSampleModelDao.insertModel(sampleModel);
 			}
 		});
 	}
