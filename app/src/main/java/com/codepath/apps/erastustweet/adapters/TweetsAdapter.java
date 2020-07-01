@@ -56,20 +56,24 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
 
     // A ViewHolder describes an item view and metadata about its place within the RecyclerView.
     public class TweetsViewHolder extends RecyclerView.ViewHolder {
-        TextView screenNameTextView, tweetBodyTextView;
-        ImageView profilePictureImageView;
+        TextView screenNameTextView, tweetBodyTextView, timestampTextView, nameTextView;
+        ImageView profilePictureImageView, verifiedBadgeImageView;
 
         public TweetsViewHolder(@NonNull View itemView) {
             super(itemView);
             screenNameTextView = (TextView) itemView.findViewById(R.id.screenNameTextView);
-            tweetBodyTextView  = (TextView) itemView.findViewById(R.id.tweetBodyTextView);
+            tweetBodyTextView = (TextView) itemView.findViewById(R.id.tweetBodyTextView);
+            timestampTextView = (TextView) itemView.findViewById(R.id.timestampTextView);
+            nameTextView = (TextView) itemView.findViewById(R.id.nameTextView);
             profilePictureImageView = (ImageView) itemView.findViewById(R.id.profilePictureImageView);
-
+            verifiedBadgeImageView = (ImageView) itemView.findViewById(R.id.verifiedBadgeTextView);
         }
 
         public void bind(Tweet tweet) {
             screenNameTextView.setText(String.format("@%s", tweet.user.screenName));
             tweetBodyTextView.setText(tweet.body);
+            timestampTextView.setText(tweet.createdAt);
+            nameTextView.setText(tweet.user.name);
             loadRoundImage(context, tweet.user.profilePictureUrl, profilePictureImageView);
         }
     }

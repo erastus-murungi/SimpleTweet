@@ -9,5 +9,9 @@
     <string name="sample_screen_name">screen_name</string>
     <string name="sample_tweet">This is a sample tweet. This is a sample tweet.</string>
     <string name="user_screen_name">User screen name</string>
+    <string name="timestamp">timestamp</string>
+    <string name="a_dot">.</string>
+    <string name="user_name">user_name</string>
+    <string name="verified_badge">Verified Badge</string>
 
 </resources>
