@@ -54,11 +54,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:ellipsize="middle"
             android:background="@color/white"
+            android:ellipsize="middle"
+            android:singleLine="true"
             android:text="@string/sample_screen_name"
-            android:textSize="14sp"
-            android:singleLine="true" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -76,6 +76,7 @@
         android:textColor="@android:color/black" />
 
     <RelativeLayout
+        android:id="@+id/layout_media"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tweetBodyTextView"
@@ -105,5 +106,56 @@
             android:background="@color/white"
             android:visibility="invisible" />
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="321dp"
+        android:layout_height="20dp"
+        android:layout_below="@+id/layout_media"
+        android:layout_alignStart="@+id/tweetBodyTextView"
+        android:layout_alignEnd="@+id/tweetBodyTextView"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/image_btn_comment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:contentDescription="@string/comment"
+            android:src="@drawable/ic_outline_mode_comment_24" />
+
+        <ImageButton
+            android:id="@+id/image_btn_retweet"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:contentDescription="@string/retweet"
+            android:src="@drawable/ic_vector_retweet" />
+
+        <ImageButton
+            android:id="@+id/image_btn_like"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:contentDescription="@string/like"
+            android:src="@drawable/ic_vector_heart_stroke" />
+
+        <ImageButton
+            android:id="@+id/image_btn_share"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:contentDescription="@string/share"
+            android:src="@drawable/ic_baseline_share_24" />
+
+    </LinearLayout>
 
 </RelativeLayout>

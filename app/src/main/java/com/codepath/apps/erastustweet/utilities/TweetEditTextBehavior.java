@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.codepath.apps.erastustweet.R;
 
 public class TweetEditTextBehavior {
-    public static final int MAX_TWEET_CHARS = 140;
+    public static final int MAX_TWEET_CHARS = 280;
 
     public static void setComposeTweetEditTextBehaviour(final Context context,
                                                          final EditText textBody, final TextView charCount,

@@ -31,18 +31,19 @@ public class ReplyTweetFragment extends DialogFragment {
     private Button mReplyButton;
     private TextView mCharCountTextView;
     private OnInputListener mOnInputListener;
+    private int pos;
 
     public interface OnInputListener {
-        void sendInput(String string);
+        void sendInput(String string, int position);
     }
 
     public ReplyTweetFragment() {
     }
 
-    public static ReplyTweetFragment newInstance(String title) {
+    public static ReplyTweetFragment newInstance(int position) {
         ReplyTweetFragment frag = new ReplyTweetFragment();
         Bundle args = new Bundle();
-        args.putString("title", title);
+        args.putInt("position", position);
         frag.setArguments(args);
         return frag;
     }
@@ -63,6 +64,7 @@ public class ReplyTweetFragment extends DialogFragment {
         mReplyEditText = (EditText) view.findViewById(R.id.edit_text_reply_tweet);
         // Fetch arguments from bundle and set title
         // Show soft keyboard automatically and request focus to field
+        pos = getArguments().getInt("position");
 
 
         mReplyButton = view.findViewById(R.id.btn_reply);
@@ -81,16 +83,14 @@ public class ReplyTweetFragment extends DialogFragment {
                 dismiss();
             }
         });
-
     }
-
 
     private void setReplyButtonBehavior() {
         mReplyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String content = mReplyEditText.getText().toString();
-                mOnInputListener.sendInput(content);
+                mOnInputListener.sendInput(content, pos);
                 dismiss();
             }
         });

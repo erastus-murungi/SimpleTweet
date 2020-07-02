@@ -24,5 +24,9 @@
     <string name="reply">Reply</string>
     <string name="cancel">Cancel</string>
     <string name="tweet_your_reply">Tweet your reply</string>
+    <string name="retweet">Retweet</string>
+    <string name="comment">Comment</string>
+    <string name="share">Share</string>
+    <string name="like">Like</string>
 
 </resources>

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,6 +96,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
         VideoView twitterVideoView;
         ImageView twitterImageView;
         Spannable tweetBody;
+        ImageButton replyImageButton;
 
         public TweetsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -105,7 +107,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
             verifiedBadgeImageView = (ImageView) itemView.findViewById(R.id.verifiedBadgeTextView);
             twitterImageView = (ImageView) itemView.findViewById(R.id.image_view_twitter);
             twitterVideoView = (VideoView) itemView.findViewById(R.id.video_view_twitter);
-
+            replyImageButton = (ImageButton) itemView.findViewById(R.id.image_btn_comment);
         }
 
         public void bind(Tweet tweet) {
@@ -121,7 +123,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
             colorUserMentions(tweetBodyTextView);
             tweetBodyTextView.setText(tweetBody);
             tweetBodyTextView.setMovementMethod(LinkMovementMethod.getInstance());
-            itemView.setOnClickListener(new View.OnClickListener() {
+            replyImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     listener.onItemClicked(getAdapterPosition());

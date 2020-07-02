@@ -100,14 +100,14 @@ public class TimelineActivity extends AppCompatActivity implements ReplyTweetFra
         return new TweetsAdapter.OnClickListener() {
             @Override
             public void onItemClicked(int position) {
-                showReplyTweetDialog();
+                showReplyTweetDialog(position);
             }
         };
     }
 
-    private void showReplyTweetDialog() {
+    private void showReplyTweetDialog(int pos) {
         FragmentManager fm = getSupportFragmentManager();
-        ReplyTweetFragment editNameDialogFragment = ReplyTweetFragment.newInstance("Some Title");
+        ReplyTweetFragment editNameDialogFragment = ReplyTweetFragment.newInstance(pos);
         editNameDialogFragment.show(fm, "fragment_reply_tweet");
     }
 
@@ -207,10 +207,20 @@ public class TimelineActivity extends AppCompatActivity implements ReplyTweetFra
     }
 
     @Override
-    public void sendInput(String string) {
+    public void sendInput(String status, int pos) {
         Log.d(TAG, "sendInput: got the input");
-        // reply
-        Log.i(TAG, string);
-
+        Log.i(TAG, status);
+        Tweet tweet = mTweets.get(pos);
+        mTwitterClient.publishReplyTweet(status,
+                new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Headers headers, JSON json) {
+                        Log.i(TAG, "Success" + json);
+                    }
+                    @Override
+                    public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                        Log.e(TAG, "Couldn't publish reply tweet", throwable);
+                    }
+                }, tweet.id, "@"+tweet.user.screenName);
     }
 }
