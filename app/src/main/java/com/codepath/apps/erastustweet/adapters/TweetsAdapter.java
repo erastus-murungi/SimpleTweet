@@ -1,14 +1,10 @@
 package com.codepath.apps.erastustweet.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,8 +25,6 @@ import com.codepath.apps.erastustweet.PatternEditableBuilder;
 import com.codepath.apps.erastustweet.R;
 import com.codepath.apps.erastustweet.models.MediaType;
 import com.codepath.apps.erastustweet.models.Tweet;
-import com.codepath.apps.erastustweet.models.UserMention;
-
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -41,16 +35,25 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
     private Context context;
     private List<Tweet> tweets;
     private EndlessRecyclerViewScrollListener mOnScrollListener;
+    private OnClickListener listener;
+
+    public interface OnClickListener {
+        void onItemClicked(int position);
+    }
 
     public TweetsAdapter(Context context, List<Tweet> tweets) {
         this.context = context;
         this.tweets = tweets;
     }
 
-    public TweetsAdapter(Context context, List<Tweet> tweets, EndlessRecyclerViewScrollListener onScrollListener) {
+    public TweetsAdapter(Context context, List<Tweet> tweets,
+                         EndlessRecyclerViewScrollListener onScrollListener,
+                         OnClickListener listener) {
+
         this.context = context;
         this.tweets = tweets;
         this.mOnScrollListener = onScrollListener;
+        this.listener = listener;
     }
 
     // For each row, inflate the layout
@@ -86,7 +89,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
     }
 
     // A ViewHolder describes an item view and metadata about its place within the RecyclerView.
-    public class TweetsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class TweetsViewHolder extends RecyclerView.ViewHolder {
         TextView screenNameTextView, tweetBodyTextView, nameTextView;
         ImageView profilePictureImageView, verifiedBadgeImageView;
         VideoView twitterVideoView;
@@ -102,6 +105,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
             verifiedBadgeImageView = (ImageView) itemView.findViewById(R.id.verifiedBadgeTextView);
             twitterImageView = (ImageView) itemView.findViewById(R.id.image_view_twitter);
             twitterVideoView = (VideoView) itemView.findViewById(R.id.video_view_twitter);
+
         }
 
         public void bind(Tweet tweet) {
@@ -117,13 +121,14 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
             colorUserMentions(tweetBodyTextView);
             tweetBodyTextView.setText(tweetBody);
             tweetBodyTextView.setMovementMethod(LinkMovementMethod.getInstance());
-        }
-
-        @Override
-        public void onClick(View v) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onItemClicked(getAdapterPosition());
+                }
+            });
         }
     }
-
 
     private void displayMedia(@NonNull Tweet tweet, ImageView targetImageView, VideoView videoView) {
         MediaType mediaType = tweet.entity.mediaType;

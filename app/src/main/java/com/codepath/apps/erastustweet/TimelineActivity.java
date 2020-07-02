@@ -2,6 +2,7 @@ package com.codepath.apps.erastustweet;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,9 +14,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.codepath.apps.erastustweet.adapters.TweetsAdapter;
+import com.codepath.apps.erastustweet.fragments.ReplyTweetFragment;
 import com.codepath.apps.erastustweet.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
@@ -29,7 +32,7 @@ import java.util.Objects;
 
 import okhttp3.Headers;
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends AppCompatActivity implements ReplyTweetFragment.OnInputListener {
     public static final String TAG = "TimelineActivity";
     public static final int REQUEST_CODE = 20;
     public static final long TIME_INTERVAL = 2000L;
@@ -64,7 +67,8 @@ public class TimelineActivity extends AppCompatActivity {
 
         mTwitterClient = TwitterApp.getRestClient(this);
         mTweets = new ArrayList<>();
-        mTweetsAdapter = new TweetsAdapter(this, mTweets, scrollListener);
+        mTweetsAdapter = new TweetsAdapter(this, mTweets,
+                scrollListener, getTweetClickListener());
 
         mTimelineRecyclerViewer.setLayoutManager(layoutManager);
         mTimelineRecyclerViewer.setAdapter(mTweetsAdapter);
@@ -90,6 +94,21 @@ public class TimelineActivity extends AppCompatActivity {
 
         // send get tweets request and populate timeline recycle view
         populateHomeTimeline();
+    }
+
+    private TweetsAdapter.OnClickListener getTweetClickListener() {
+        return new TweetsAdapter.OnClickListener() {
+            @Override
+            public void onItemClicked(int position) {
+                showReplyTweetDialog();
+            }
+        };
+    }
+
+    private void showReplyTweetDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        ReplyTweetFragment editNameDialogFragment = ReplyTweetFragment.newInstance("Some Title");
+        editNameDialogFragment.show(fm, "fragment_reply_tweet");
     }
 
 
@@ -185,5 +204,13 @@ public class TimelineActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), getString(R.string.exit_press_back_twice_message), Toast.LENGTH_SHORT).show();
         }
         mBackPressed = System.currentTimeMillis();
+    }
+
+    @Override
+    public void sendInput(String string) {
+        Log.d(TAG, "sendInput: got the input");
+        // reply
+        Log.i(TAG, string);
+
     }
 }

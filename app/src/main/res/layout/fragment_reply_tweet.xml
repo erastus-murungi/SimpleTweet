@@ -1,0 +1,76 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.codepath.apps.erastustweet.fragments.ReplyTweetFragment">
+
+    <LinearLayout
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="56dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/cancel"
+            android:textAlignment="center"
+            android:textColor="@color/twitter_blue"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btn_reply"
+            android:layout_width="55dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="140dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/background_button"
+            android:text="@string/reply"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/layout_top"
+        android:layout_marginTop="2dp"
+        android:background="?android:attr/listDivider" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/divider"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/edit_text_reply_tweet"
+            android:layout_width="255dp"
+            android:layout_height="244dp"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="23dp"
+            android:autofillHints=""
+            android:gravity="top|start"
+            android:hint="@string/tweet_your_reply"
+            android:inputType="textMultiLine"
+            android:minLines="6"
+            android:textAlignment="viewStart" />
+
+        <TextView
+            android:id="@+id/tv_char_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/zero" />
+    </LinearLayout>
+</RelativeLayout>
