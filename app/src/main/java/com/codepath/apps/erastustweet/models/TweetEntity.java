@@ -12,7 +12,7 @@ public class TweetEntity {
     public static final String TAG = "TweetEntity";
     public int[][] hashTagIndices;
     public String[][] urls;
-    public String[][] userMentions;
+    public UserMention[] userMentions;
     public String[] symbols;
     public MediaType mediaType;
     public String[] entities;
@@ -67,21 +67,17 @@ public class TweetEntity {
         }
     }
 
-    private static String[][] getUserMentions(JSONObject jsonObject) {
+    private static UserMention[] getUserMentions(JSONObject jsonObject) {
         try {
-            JSONArray userMentionsArray = jsonObject.getJSONObject("entities").getJSONArray("user_mentions");
-            if (userMentionsArray.length() == 0) {
+            UserMention[] mentions = UserMention.fromJsonArray(jsonObject);
+            if (mentions == null) {
+                Log.i(TAG, "No mentions");
                 return null;
+            } else  {
+                return mentions;
             }
-            String[][] userMentions = new String[userMentionsArray.length()][2];
-            JSONObject userMentionObject;
-            for (int i = 0; i < userMentionsArray.length(); i++) {
-                userMentionObject = userMentionsArray.getJSONObject(i);
-                userMentions[i][0] = userMentionObject.getString("screen_name");
-                userMentions[i][1] = userMentionObject.getString("id_str");
-            }
-            return userMentions;
         } catch (JSONException e) {
+            Log.i(TAG, "Json Exception", e);
             return null;
         }
     }

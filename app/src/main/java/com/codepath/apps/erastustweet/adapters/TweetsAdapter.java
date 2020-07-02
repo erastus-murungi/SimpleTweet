@@ -177,6 +177,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
         }
     }
 
+    private void colorUserMentions(@NonNull Spannable string, Tweet tweet) {
+        if (tweet.entity.userMentions != null) {
+
+        }
+    }
+
     private void displayGif(Context context, String imageUrl, ImageView targetImageView) {
         Glide.with(context)
                 .asGif()
