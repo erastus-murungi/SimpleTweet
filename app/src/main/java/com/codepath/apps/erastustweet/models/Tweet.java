@@ -20,6 +20,7 @@ public class Tweet {
     public String createdAt;
     public User user;
     public long id;
+    public TweetEntity entity;
 
     public Tweet() {}
 
@@ -30,6 +31,7 @@ public class Tweet {
         tweet.createdAt = getRelativeTimeAgo(jsonObject.getString("created_at"));
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         tweet.id = jsonObject.getLong("id");
+        tweet.entity = TweetEntity.fromJsonArray(jsonObject);
         return tweet;
     }
 

@@ -9,7 +9,7 @@ import org.parceler.Parcel;
 
 @Parcel
 public class TweetEntity {
-    public static final String TAG = "TweetEntities";
+    public static final String TAG = "TweetEntity";
     public String[] hashTags;
     public String[][] urls;
     public String[][] userMentions;
@@ -33,7 +33,10 @@ public class TweetEntity {
 
     private static String[][] getUrls(JSONObject jsonObject) {
         try {
-            JSONArray urlsArray = jsonObject.getJSONArray("urls");
+            JSONArray urlsArray = jsonObject.getJSONObject("entities").getJSONArray("urls");
+            if (urlsArray.length() == 0) {
+                return null;
+            }
             String[][] urls = new String[urlsArray.length()][2];
             JSONObject urlObject;
             for (int i = 0; i < urlsArray.length(); i++) {
@@ -49,7 +52,11 @@ public class TweetEntity {
 
     private static String[] getSymbols(JSONObject jsonObject) {
         try {
-            JSONArray symbolsArray = jsonObject.getJSONArray("symbols");
+
+            JSONArray symbolsArray = jsonObject.getJSONObject("symbols").getJSONArray("symbols");
+            if (symbolsArray.length() == 0) {
+                return null;
+            }
             String[] symbols = new String[symbolsArray.length()];
             for (int i = 0; i < symbolsArray.length(); i++) {
                 symbols[i] = symbolsArray.getJSONObject(i).getString("text");
@@ -62,13 +69,16 @@ public class TweetEntity {
 
     private static String[][] getUserMentions(JSONObject jsonObject) {
         try {
-            JSONArray userMentionsArray = jsonObject.getJSONArray("user_mentions");
+            JSONArray userMentionsArray = jsonObject.getJSONObject("entities").getJSONArray("user_mentions");
+            if (userMentionsArray.length() == 0) {
+                return null;
+            }
             String[][] userMentions = new String[userMentionsArray.length()][2];
             JSONObject userMentionObject;
             for (int i = 0; i < userMentionsArray.length(); i++) {
                 userMentionObject = userMentionsArray.getJSONObject(i);
-                userMentions[i][0] = userMentionObject.getString("text");
-                userMentions[i][1] = userMentionObject.getString("id");
+                userMentions[i][0] = userMentionObject.getString("screen_name");
+                userMentions[i][1] = userMentionObject.getString("id_str");
             }
             return userMentions;
         } catch (JSONException e) {
@@ -78,7 +88,11 @@ public class TweetEntity {
 
     private static String[] getHashTags(JSONObject jsonObject) {
         try {
-            JSONArray hashTagArray = jsonObject.getJSONArray("hashtags");
+            JSONObject entitiesObject = jsonObject.getJSONObject("entities");
+            JSONArray hashTagArray = entitiesObject.getJSONArray("hashtags");
+            if (hashTagArray.length() == 0) {
+                return null;
+            }
             String[] hashTags = new String[hashTagArray.length()];
             for (int i = 0; i < hashTagArray.length(); i++) {
                 hashTags[i] = hashTagArray.getJSONObject(i).getString("text");
@@ -91,7 +105,8 @@ public class TweetEntity {
 
     private static MediaType getMediaType(JSONObject jsonObject) {
         try {
-            JSONArray mediaArray = jsonObject.getJSONArray("extended_entities");
+            JSONObject extendedEntities = jsonObject.getJSONObject("extended_entities");
+            JSONArray mediaArray = extendedEntities.getJSONArray("media");
             JSONObject mediaObject = mediaArray.getJSONObject(0);
             if (mediaObject == null) {
                 return null;
@@ -115,8 +130,12 @@ public class TweetEntity {
 
     private static String[] getMediaUrls(JSONObject jsonObject) {
         try {
-            JSONArray mediaArray = jsonObject.getJSONArray("extended_entities");
-            String[] entities = new String[jsonObject.length()];
+            JSONObject extendedEntities = jsonObject.getJSONObject("extended_entities");
+            JSONArray mediaArray = extendedEntities.getJSONArray("media");
+            if (mediaArray.length() == 0) {
+                return null;
+            }
+            String[] entities = new String[mediaArray.length()];
             for (int i = 0; i < mediaArray.length(); i++) {
                 JSONObject mediaObject = mediaArray.getJSONObject(i);
                 entities[i] = mediaObject.getString("media_url_https");
