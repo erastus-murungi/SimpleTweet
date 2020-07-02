@@ -3,6 +3,7 @@ package com.codepath.apps.erastustweet;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spannable;
@@ -22,6 +23,8 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import org.json.JSONException;
 import org.parceler.Parcels;
 
+import java.util.Objects;
+
 import okhttp3.Headers;
 
 public class ComposeActivity extends AppCompatActivity {
@@ -37,6 +40,9 @@ public class ComposeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
+
+        Objects.requireNonNull(getSupportActionBar()).
+                setBackgroundDrawable(new ColorDrawable(getColor(R.color.twitter_blue)));
 
         mTwitterClient = TwitterApp.getRestClient(this);
         mComposeTweetButton = (Button) findViewById(R.id.button_compose_tweet);

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -45,7 +46,9 @@ public class TimelineActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Timeline");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        Objects.requireNonNull(getSupportActionBar()).
+                setBackgroundDrawable(new ColorDrawable(getColor(R.color.twitter_blue)));
 
         mTimelineRecyclerViewer = findViewById(R.id.recycler_view_timeline);
         mTimelineSwipeRefresh = findViewById(R.id.swipe_refresh_timeline);

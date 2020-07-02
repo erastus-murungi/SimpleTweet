@@ -81,7 +81,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
     }
 
     // A ViewHolder describes an item view and metadata about its place within the RecyclerView.
-    public class TweetsViewHolder extends RecyclerView.ViewHolder {
+    public class TweetsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView screenNameTextView, tweetBodyTextView, nameTextView;
         ImageView profilePictureImageView, verifiedBadgeImageView;
         VideoView twitterVideoView;
@@ -100,7 +100,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
         }
 
         public void bind(Tweet tweet) {
-            screenNameTextView.setText(String.format("@%s\u00B7%s", tweet.user.screenName, tweet.createdAt));
+            screenNameTextView.setText(String.format("@%s \u00B7 %s", tweet.user.screenName, tweet.createdAt));
             nameTextView.setText(tweet.user.name);
             loadCircularImage(context, tweet.user.profilePictureUrl, profilePictureImageView);
             if (!tweet.user.isVerified) {
@@ -112,6 +112,10 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
 //            colorUserMentions(tweetBody, tweet);
             tweetBodyTextView.setText(tweetBody);
             tweetBodyTextView.setMovementMethod(LinkMovementMethod.getInstance());
+        }
+
+        @Override
+        public void onClick(View v) {
         }
     }
 
