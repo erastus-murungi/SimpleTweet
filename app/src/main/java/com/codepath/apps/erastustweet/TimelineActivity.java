@@ -49,20 +49,29 @@ public class TimelineActivity extends AppCompatActivity {
 
         mTimelineRecyclerViewer = findViewById(R.id.recycler_view_timeline);
         mTimelineSwipeRefresh = findViewById(R.id.swipe_refresh_timeline);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+
+        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                Log.i(TAG, "On Load more getting more tweets!");
+                getMoreTweets();
+            }
+        };
 
         mTwitterClient = TwitterApp.getRestClient(this);
         mTweets = new ArrayList<>();
-        mTweetsAdapter = new TweetsAdapter(this, mTweets);
+        mTweetsAdapter = new TweetsAdapter(this, mTweets, scrollListener);
 
-        mTimelineRecyclerViewer.setLayoutManager(new LinearLayoutManager(this));
+        mTimelineRecyclerViewer.setLayoutManager(layoutManager);
         mTimelineRecyclerViewer.setAdapter(mTweetsAdapter);
+        mTimelineRecyclerViewer.addOnScrollListener(scrollListener);
+
 
         // add a horizontal separator between rows
         mTimelineRecyclerViewer.addItemDecoration(
                 new DividerItemDecoration(mTimelineRecyclerViewer.getContext(),
                         DividerItemDecoration.VERTICAL));
-
-
 
         // set the loading indicator to cycle between four colors
         mTimelineSwipeRefresh.setColorSchemeResources(R.color.holo_red_dark,
@@ -78,7 +87,25 @@ public class TimelineActivity extends AppCompatActivity {
 
         // send get tweets request and populate timeline recycle view
         populateHomeTimeline();
+    }
 
+    private void getMoreTweets() {
+         mTwitterClient.getNextPageOfTweets(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                try {
+                    Log.i(TAG, "More tweets loaded");
+                    mTweetsAdapter.addAll(Tweet.fromJsonArray(json.jsonArray));
+                } catch (JSONException e) {
+                    Log.e(TAG, "Json Exception", e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.e(TAG, "Error retrieving posts" + response, throwable);
+            }
+        }, mTweets.get(mTweets.size() - 1).id);
     }
 
     @Override

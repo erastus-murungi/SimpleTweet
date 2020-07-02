@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.apps.erastustweet.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.erastustweet.R;
 import com.codepath.apps.erastustweet.models.Tweet;
 
@@ -19,10 +20,16 @@ import java.util.List;
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsViewHolder> {
     private Context context;
     private List<Tweet> tweets;
+    private EndlessRecyclerViewScrollListener mOnScrollListener;
 
     public TweetsAdapter(Context context, List<Tweet> tweets) {
         this.context = context;
         this.tweets = tweets;
+    }
+    public TweetsAdapter(Context context, List<Tweet> tweets, EndlessRecyclerViewScrollListener onScrollListener) {
+        this.context = context;
+        this.tweets = tweets;
+        this.mOnScrollListener = onScrollListener;
     }
 
     // For each row, inflate the layout
@@ -43,6 +50,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
     public void clear() {
         tweets.clear();
         notifyDataSetChanged();
+        mOnScrollListener.resetState();
     }
 
     //
