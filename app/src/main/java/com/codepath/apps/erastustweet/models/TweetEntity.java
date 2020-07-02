@@ -10,7 +10,7 @@ import org.parceler.Parcel;
 @Parcel
 public class TweetEntity {
     public static final String TAG = "TweetEntity";
-    public String[] hashTags;
+    public int[][] hashTagIndices;
     public String[][] urls;
     public String[][] userMentions;
     public String[] symbols;
@@ -24,7 +24,7 @@ public class TweetEntity {
         TweetEntity tweetEntity = new TweetEntity();
         tweetEntity.entities = getMediaUrls(jsonObject);
         tweetEntity.mediaType = getMediaType(jsonObject);
-        tweetEntity.hashTags = getHashTags(jsonObject);
+        tweetEntity.hashTagIndices = getHashTags(jsonObject);
         tweetEntity.userMentions = getUserMentions(jsonObject);
         tweetEntity.urls = getUrls(jsonObject);
         tweetEntity.symbols = getSymbols(jsonObject);
@@ -86,16 +86,20 @@ public class TweetEntity {
         }
     }
 
-    private static String[] getHashTags(JSONObject jsonObject) {
+    private static int[][] getHashTags(JSONObject jsonObject) {
         try {
             JSONObject entitiesObject = jsonObject.getJSONObject("entities");
             JSONArray hashTagArray = entitiesObject.getJSONArray("hashtags");
             if (hashTagArray.length() == 0) {
                 return null;
             }
-            String[] hashTags = new String[hashTagArray.length()];
+            int[][] hashTags = new int[hashTagArray.length()][];
             for (int i = 0; i < hashTagArray.length(); i++) {
-                hashTags[i] = hashTagArray.getJSONObject(i).getString("text");
+                JSONArray indices = hashTagArray.getJSONObject(i).getJSONArray("indices");
+                hashTags[i] = new int[indices.length()];
+                for (int j = 0; j < indices.length(); j++) {
+                    hashTags[i][j] = indices.getInt(j);
+                }
             }
             return hashTags;
         } catch (JSONException e) {

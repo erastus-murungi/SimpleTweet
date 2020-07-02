@@ -1,21 +1,29 @@
 package com.codepath.apps.erastustweet.adapters;
 
 import android.content.Context;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.codepath.apps.erastustweet.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.erastustweet.R;
+import com.codepath.apps.erastustweet.models.MediaType;
 import com.codepath.apps.erastustweet.models.Tweet;
 
+
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsViewHolder> {
     private Context context;
@@ -26,6 +34,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
         this.context = context;
         this.tweets = tweets;
     }
+
     public TweetsAdapter(Context context, List<Tweet> tweets, EndlessRecyclerViewScrollListener onScrollListener) {
         this.context = context;
         this.tweets = tweets;
@@ -60,12 +69,16 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
     }
 
     @Override
-    public int getItemCount() { return tweets.size(); }
+    public int getItemCount() {
+        return tweets.size();
+    }
 
     // A ViewHolder describes an item view and metadata about its place within the RecyclerView.
     public class TweetsViewHolder extends RecyclerView.ViewHolder {
         TextView screenNameTextView, tweetBodyTextView, timestampTextView, nameTextView;
         ImageView profilePictureImageView, verifiedBadgeImageView;
+        VideoView twitterVideoView;
+        ImageView twitterImageView;
 
         public TweetsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,6 +88,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
             nameTextView = (TextView) itemView.findViewById(R.id.nameTextView);
             profilePictureImageView = (ImageView) itemView.findViewById(R.id.profilePictureImageView);
             verifiedBadgeImageView = (ImageView) itemView.findViewById(R.id.verifiedBadgeTextView);
+            twitterImageView = (ImageView) itemView.findViewById(R.id.image_view_twitter);
+            twitterVideoView = (VideoView) itemView.findViewById(R.id.video_view_twitter);
         }
 
         public void bind(Tweet tweet) {
@@ -82,18 +97,87 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
             tweetBodyTextView.setText(tweet.body);
             timestampTextView.setText(tweet.createdAt);
             nameTextView.setText(tweet.user.name);
-            loadRoundImage(context, tweet.user.profilePictureUrl, profilePictureImageView);
+            loadCircularImage(context, tweet.user.profilePictureUrl, profilePictureImageView);
             if (!tweet.user.isVerified) {
-                verifiedBadgeImageView.setVisibility(View.INVISIBLE);
+                verifiedBadgeImageView.setVisibility(View.GONE);
             }
+            displayMedia(tweet, twitterImageView, twitterVideoView);
+            colorHashTags(tweet);
         }
     }
 
-    /** Display a circular image in an imageView using the Glide Library */
-    public static void loadRoundImage(Context context, String imageUrl, ImageView targetImageView) {
+
+    private void displayMedia(@NonNull Tweet tweet, ImageView targetImageView, VideoView videoView) {
+        MediaType mediaType = tweet.entity.mediaType;
+        if (mediaType != null) {
+            switch (mediaType) {
+                case IMAGE:
+                    videoView.setVisibility(View.GONE);
+                    targetImageView.setVisibility(View.VISIBLE);
+                    loadRoundImage(context, tweet.entity.entities[0], targetImageView);
+                    break;
+                case ANIMATED_GIF:
+                    videoView.setVisibility(View.GONE);
+                    targetImageView.setVisibility(View.VISIBLE);
+                    displayGif(context, tweet.entity.entities[0], targetImageView);
+                    break;
+                case VIDEO:
+                    break;
+                default:
+                    videoView.setVisibility(View.GONE);
+                    targetImageView.setVisibility(View.GONE);
+            }
+        } else {
+            videoView.setVisibility(View.GONE);
+            targetImageView.setVisibility(View.GONE);
+        }
+
+    }
+
+    // Display a circular image in an imageView using the Glide Library
+    public static void loadCircularImage(Context context, String imageUrl, ImageView targetImageView) {
         Glide.with(context)
                 .load(imageUrl)
                 .circleCrop()
+                .into(targetImageView);
+    }
+
+    // display image with rounded corners
+    public static void loadRoundImage(Context context, String imageUrl, ImageView targetImageView) {
+        Glide.with(context)
+                .load(imageUrl)
+                .fitCenter()
+                .apply(new RequestOptions()
+                        .transform(new RoundedCornersTransformation(30, 0)))
+                .into(targetImageView);
+    }
+
+    // get the index of the last character of a word starting index `start`
+    private int getWordLastCharIndex(CharSequence sequence, int start) {
+        int end = start;
+        while (end < sequence.length() && !Character.isWhitespace(sequence.charAt(end++))) ;
+        return end;
+    }
+
+    private void colorHashTags(@NonNull Tweet tweet) {
+        Spannable tweetBody = new SpannableString(tweet.body);
+        if (tweet.entity.hashTagIndices != null) {
+            for (int[] arr: tweet.entity.hashTagIndices) {
+                for (int index: arr) {
+                    ;
+                }
+            }
+        }
+
+    }
+
+    private void displayGif(Context context, String imageUrl, ImageView targetImageView) {
+        Glide.with(context)
+                .asGif()
+                .load(imageUrl)
+                .fitCenter()
+                .apply(new RequestOptions()
+                        .transform(new RoundedCornersTransformation(30, 0)))
                 .into(targetImageView);
     }
 }

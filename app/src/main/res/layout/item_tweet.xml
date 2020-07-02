@@ -11,14 +11,16 @@
         android:id="@+id/profilePictureImageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginStart="20dp"
         android:contentDescription="@string/user_screen_name"
         tools:srcCompat="@tools:sample/avatars" />
 
     <LinearLayout
         android:id="@+id/userInfoLinearLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
+        android:layout_marginEnd="40dp"
         android:layout_toEndOf="@+id/profilePictureImageView"
         android:orientation="horizontal">
 
@@ -72,14 +74,42 @@
 
     <TextView
         android:id="@+id/tweetBodyTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/userInfoLinearLayout"
         android:layout_marginStart="5dp"
         android:layout_marginTop="2dp"
+        android:layout_marginEnd="40dp"
         android:layout_toEndOf="@+id/profilePictureImageView"
         android:text="@string/sample_tweet"
         android:textColor="@android:color/black" />
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tweetBodyTextView"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="40dp"
+        android:layout_toEndOf="@+id/profilePictureImageView">
+
+        <ImageView
+            android:id="@+id/image_view_twitter"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            android:contentDescription="@string/image"
+            android:visibility="invisible" />
+
+        <VideoView
+            android:id="@+id/video_view_twitter"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            android:visibility="invisible" />
+    </RelativeLayout>
 
 </RelativeLayout>

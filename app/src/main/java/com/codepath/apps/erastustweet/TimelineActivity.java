@@ -89,8 +89,9 @@ public class TimelineActivity extends AppCompatActivity {
         populateHomeTimeline();
     }
 
+
     private void getMoreTweets() {
-         mTwitterClient.getNextPageOfTweets(new JsonHttpResponseHandler() {
+        mTwitterClient.getNextPageOfTweets(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 try {
@@ -131,8 +132,7 @@ public class TimelineActivity extends AppCompatActivity {
             // get the tweet and update the recycler view with this tweet
             if (data == null) {
                 Log.e(TAG, "Intent returned is null");
-            }
-            else {
+            } else {
                 Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
                 mTweets.add(0, tweet);
                 mTweetsAdapter.notifyItemInserted(0);
