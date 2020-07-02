@@ -5,13 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="10dp"
-    android:layout_marginBottom="10dp">
+    android:layout_marginBottom="10dp"
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/profilePictureImageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="20dp"
+        android:background="@color/white"
         android:contentDescription="@string/user_screen_name"
         tools:srcCompat="@tools:sample/avatars" />
 
@@ -22,6 +24,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginEnd="40dp"
         android:layout_toEndOf="@+id/profilePictureImageView"
+        android:background="@color/white"
         android:orientation="horizontal">
 
         <TextView
@@ -29,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
+            android:background="@color/white"
             android:text="@string/user_name"
             android:textColor="@android:color/black"
             android:textSize="14sp"
@@ -40,6 +44,7 @@
             android:layout_height="16dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="2dp"
+            android:background="@color/white"
             android:contentDescription="@string/verified_badge"
             android:src="@drawable/ic_verified_badge"
             android:visibility="visible" />
@@ -49,26 +54,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:ellipsize="middle"
+            android:background="@color/white"
             android:text="@string/sample_screen_name"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/justASeparator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:layout_marginTop="-5dp"
-            android:layout_marginEnd="3dp"
-            android:text="@string/a_dot"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/timestampTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
-            android:text="@string/timestamp"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:singleLine="true" />
 
     </LinearLayout>
 
@@ -81,6 +71,7 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="40dp"
         android:layout_toEndOf="@+id/profilePictureImageView"
+        android:background="@color/white"
         android:text="@string/sample_tweet"
         android:textColor="@android:color/black" />
 
@@ -90,7 +81,8 @@
         android:layout_below="@+id/tweetBodyTextView"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="40dp"
-        android:layout_toEndOf="@+id/profilePictureImageView">
+        android:layout_toEndOf="@+id/profilePictureImageView"
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/image_view_twitter"
@@ -99,6 +91,7 @@
             android:layout_marginTop="0dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="0dp"
+            android:background="@color/white"
             android:contentDescription="@string/image"
             android:visibility="invisible" />
 
@@ -109,6 +102,7 @@
             android:layout_marginTop="0dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="0dp"
+            android:background="@color/white"
             android:visibility="invisible" />
     </RelativeLayout>
 

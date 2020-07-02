@@ -3,9 +3,9 @@ package com.codepath.apps.erastustweet.models;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
-import java.util.List;
-
+@Parcel
 public class UserMention {
     /**
      * {
@@ -24,10 +24,10 @@ public class UserMention {
      * }
      */
 
-    private String mScreenName;
-    private String mName;
-    private long mId;
-    private int[] mIndices;
+    public String screenName;
+    public String name;
+    public long id;
+    public int[] indices;
 
     public UserMention() {}
 
@@ -42,10 +42,10 @@ public class UserMention {
         for (int i = 0; i < userMentionsArray.length(); i++) {
             userMention = userMentionsArray.getJSONObject(i);
             temp = new UserMention();
-            temp.mName = userMention.getString("name");
-            temp.mScreenName = userMention.getString("screen_name");
-            temp.mId = userMention.getLong("id");
-            temp.mIndices = toIntArray(userMention.getJSONArray("indices"));
+            temp.name = userMention.getString("name");
+            temp.screenName = userMention.getString("screen_name");
+            temp.id = userMention.getLong("id");
+            temp.indices = toIntArray(userMention.getJSONArray("indices"));
             userMentions[i] = temp;
         }
         return userMentions;

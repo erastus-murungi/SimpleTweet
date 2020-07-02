@@ -4,8 +4,11 @@ import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.style.BackgroundColorSpan;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +25,7 @@ import com.codepath.apps.erastustweet.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.erastustweet.R;
 import com.codepath.apps.erastustweet.models.MediaType;
 import com.codepath.apps.erastustweet.models.Tweet;
+import com.codepath.apps.erastustweet.models.UserMention;
 
 
 import java.util.List;
@@ -78,7 +82,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
 
     // A ViewHolder describes an item view and metadata about its place within the RecyclerView.
     public class TweetsViewHolder extends RecyclerView.ViewHolder {
-        TextView screenNameTextView, tweetBodyTextView, timestampTextView, nameTextView;
+        TextView screenNameTextView, tweetBodyTextView, nameTextView;
         ImageView profilePictureImageView, verifiedBadgeImageView;
         VideoView twitterVideoView;
         ImageView twitterImageView;
@@ -88,7 +92,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
             super(itemView);
             screenNameTextView = (TextView) itemView.findViewById(R.id.screenNameTextView);
             tweetBodyTextView = (TextView) itemView.findViewById(R.id.tweetBodyTextView);
-            timestampTextView = (TextView) itemView.findViewById(R.id.timestampTextView);
             nameTextView = (TextView) itemView.findViewById(R.id.nameTextView);
             profilePictureImageView = (ImageView) itemView.findViewById(R.id.profilePictureImageView);
             verifiedBadgeImageView = (ImageView) itemView.findViewById(R.id.verifiedBadgeTextView);
@@ -97,8 +100,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
         }
 
         public void bind(Tweet tweet) {
-            screenNameTextView.setText(String.format("@%s", tweet.user.screenName));
-            timestampTextView.setText(tweet.createdAt);
+            screenNameTextView.setText(String.format("@%s\u00B7%s", tweet.user.screenName, tweet.createdAt));
             nameTextView.setText(tweet.user.name);
             loadCircularImage(context, tweet.user.profilePictureUrl, profilePictureImageView);
             if (!tweet.user.isVerified) {
@@ -107,7 +109,9 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
             displayMedia(tweet, twitterImageView, twitterVideoView);
             tweetBody = new SpannableString(tweet.body);
             colorHashTags(tweetBody, tweet);
+//            colorUserMentions(tweetBody, tweet);
             tweetBodyTextView.setText(tweetBody);
+            tweetBodyTextView.setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
 
@@ -160,14 +164,15 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
     // get the index of the last character of a word starting index `start`
     private int getWordLastCharIndex(CharSequence sequence, int start) {
         int end = start;
+        Log.i("Adapter", "Character: " + sequence.charAt(start));
         while (end < sequence.length() && !Character.isWhitespace(sequence.charAt(end++))) ;
         return end;
     }
 
     private void colorHashTags(@NonNull Spannable string, Tweet tweet) {
         if (tweet.entity.hashTagIndices != null) {
-            for (int[] arr: tweet.entity.hashTagIndices) {
-                for (int index: arr) {
+            for (int[] arr : tweet.entity.hashTagIndices) {
+                for (int index : arr) {
                     // can also make the text clickable
                     string.setSpan(new ForegroundColorSpan(context.getColor(R.color.twitter_blue)),
                             index, getWordLastCharIndex(string, index),
@@ -179,7 +184,25 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
 
     private void colorUserMentions(@NonNull Spannable string, Tweet tweet) {
         if (tweet.entity.userMentions != null) {
+            for (UserMention mention : tweet.entity.userMentions) {
+                ClickableSpan clickableSpan = new ClickableSpan() {
+                    @Override
+                    public void onClick(@NonNull View widget) {
+                        // start an activity to display user info
+                    }
 
+                    @Override
+                    public void updateDrawState(@NonNull TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
+                    }
+                };
+                for (int index : mention.indices) {
+                    string.setSpan(clickableSpan, index,
+                            getWordLastCharIndex(string, index), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+
+            }
         }
     }
 
