@@ -45,9 +45,9 @@ public class ComposeActivity extends AppCompatActivity {
                 setBackgroundDrawable(new ColorDrawable(getColor(R.color.twitter_blue)));
 
         mTwitterClient = TwitterApp.getRestClient(this);
+        mCharCountTextView = (TextView) findViewById(R.id.text_view_char_count);
         mComposeTweetButton = (Button) findViewById(R.id.button_compose_tweet);
         mComposeTweetEditText = (EditText) findViewById(R.id.edit_text_compose_tweet);
-        mCharCountTextView = (TextView) findViewById(R.id.text_view_char_count);
 
         setComposeTweetEditTextBehaviour();
         setComposeTweetButtonBehavior();
@@ -66,9 +66,6 @@ public class ComposeActivity extends AppCompatActivity {
             // It is an error to attempt to make changes to s from this callback.
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if (start + after > MAX_TWEET_CHARS) {
-                    mComposeTweetButton.setClickable(false);
-                }
             }
 
             // This method is called to notify you that, within s, the count
@@ -85,7 +82,8 @@ public class ComposeActivity extends AppCompatActivity {
 
                 } else if (tweetBody.length() == 0) {
                     mComposeTweetButton.setEnabled(false);
-                    mCharCountTextView.setText(0);
+                    mCharCountTextView.setTextColor(getColor(R.color.green));
+                    mCharCountTextView.setText(getString(R.string.zero));
                 } else {
                     mComposeTweetButton.setEnabled(true);
                     mCharCountTextView.setTextColor(getColor(R.color.green));
@@ -95,26 +93,27 @@ public class ComposeActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.toString().trim().length() > MAX_TWEET_CHARS) {
-                    if (mChangedByTextWatcher) {
-                        return;
+                if (s.length() > 0) {
+                    if (s.toString().trim().length() > MAX_TWEET_CHARS) {
+                        if (mChangedByTextWatcher) {
+                            return;
+                        }
+                        mChangedByTextWatcher = true;
+
+                        // cursor position will be reset to 0, so save it
+                        int cursorPosition = mComposeTweetEditText.getSelectionStart();
+
+                        Spannable tweetColored = new SpannableString(s);
+                        tweetColored.setSpan(new BackgroundColorSpan(getColor(R.color.RedHighlight)),
+                                MAX_TWEET_CHARS, s.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+
+                        mComposeTweetEditText.setText(tweetColored);
+
+                        mComposeTweetEditText.setSelection(cursorPosition);
+
+                        // release, so the TextWatcher can start to listen again.
+                        mChangedByTextWatcher = false;
                     }
-                    mChangedByTextWatcher = true;
-
-                    // cursor position will be reset to 0, so save it
-                    int cursorPosition = mComposeTweetEditText.getSelectionStart();
-
-                    Spannable tweetColored = new SpannableString(s);
-                    tweetColored.setSpan(new BackgroundColorSpan(getColor(R.color.RedHighlight)),
-                            140, s.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-
-                    mComposeTweetEditText.setText(tweetColored);
-
-                    mComposeTweetEditText.setSelection(cursorPosition);
-
-                    // release, so the TextWatcher can start to listen again.
-                    mChangedByTextWatcher = false;
-
                 }
             }
         });

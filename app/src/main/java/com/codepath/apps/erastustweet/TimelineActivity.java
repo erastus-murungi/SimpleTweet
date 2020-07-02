@@ -170,11 +170,17 @@ public class TimelineActivity extends AppCompatActivity {
         });
     }
 
+    private void quit() {
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
+    }
+
     @Override
     public void onBackPressed() {
         if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
-            super.onBackPressed();
-            return;
+            quit();
         } else {
             Toast.makeText(getBaseContext(), getString(R.string.exit_press_back_twice_message), Toast.LENGTH_SHORT).show();
         }

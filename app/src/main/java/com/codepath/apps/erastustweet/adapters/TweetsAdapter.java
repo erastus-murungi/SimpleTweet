@@ -1,8 +1,10 @@
 package com.codepath.apps.erastustweet.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.codepath.apps.erastustweet.EndlessRecyclerViewScrollListener;
+import com.codepath.apps.erastustweet.PatternEditableBuilder;
 import com.codepath.apps.erastustweet.R;
 import com.codepath.apps.erastustweet.models.MediaType;
 import com.codepath.apps.erastustweet.models.Tweet;
@@ -29,6 +33,7 @@ import com.codepath.apps.erastustweet.models.UserMention;
 
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
@@ -107,9 +112,9 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
                 verifiedBadgeImageView.setVisibility(View.GONE);
             }
             displayMedia(tweet, twitterImageView, twitterVideoView);
-            tweetBody = new SpannableString(tweet.body);
+            tweetBody = new SpannableStringBuilder(tweet.body);
             colorHashTags(tweetBody, tweet);
-//            colorUserMentions(tweetBody, tweet);
+            colorUserMentions(tweetBodyTextView);
             tweetBodyTextView.setText(tweetBody);
             tweetBodyTextView.setMovementMethod(LinkMovementMethod.getInstance());
         }
@@ -180,34 +185,22 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
                     // can also make the text clickable
                     string.setSpan(new ForegroundColorSpan(context.getColor(R.color.twitter_blue)),
                             index, getWordLastCharIndex(string, index),
-                            Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             }
         }
     }
 
-    private void colorUserMentions(@NonNull Spannable string, Tweet tweet) {
-        if (tweet.entity.userMentions != null) {
-            for (UserMention mention : tweet.entity.userMentions) {
-                ClickableSpan clickableSpan = new ClickableSpan() {
-                    @Override
-                    public void onClick(@NonNull View widget) {
-                        // start an activity to display user info
-                    }
-
-                    @Override
-                    public void updateDrawState(@NonNull TextPaint ds) {
-                        super.updateDrawState(ds);
-                        ds.setUnderlineText(false);
-                    }
-                };
-                for (int index : mention.indices) {
-                    string.setSpan(clickableSpan, index,
-                            getWordLastCharIndex(string, index), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
-
-            }
-        }
+    private void colorUserMentions(@NonNull TextView textView) {
+        new PatternEditableBuilder().
+                addPattern(Pattern.compile("@(\\w+)"), context.getColor(R.color.twitter_blue),
+                        new PatternEditableBuilder.SpannableClickedListener() {
+                            @Override
+                            public void onSpanClicked(String text) {
+                                Toast.makeText(context, "Clicked username: " + text,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }).into(textView);
     }
 
     private void displayGif(Context context, String imageUrl, ImageView targetImageView) {
