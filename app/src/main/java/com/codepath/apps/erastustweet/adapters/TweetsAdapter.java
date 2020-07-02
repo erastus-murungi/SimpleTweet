@@ -3,6 +3,9 @@ package com.codepath.apps.erastustweet.adapters;
 import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +82,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
         ImageView profilePictureImageView, verifiedBadgeImageView;
         VideoView twitterVideoView;
         ImageView twitterImageView;
+        Spannable tweetBody;
 
         public TweetsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -94,7 +98,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
 
         public void bind(Tweet tweet) {
             screenNameTextView.setText(String.format("@%s", tweet.user.screenName));
-            tweetBodyTextView.setText(tweet.body);
             timestampTextView.setText(tweet.createdAt);
             nameTextView.setText(tweet.user.name);
             loadCircularImage(context, tweet.user.profilePictureUrl, profilePictureImageView);
@@ -102,7 +105,9 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
                 verifiedBadgeImageView.setVisibility(View.GONE);
             }
             displayMedia(tweet, twitterImageView, twitterVideoView);
-            colorHashTags(tweet);
+            tweetBody = new SpannableString(tweet.body);
+            colorHashTags(tweetBody, tweet);
+            tweetBodyTextView.setText(tweetBody);
         }
     }
 
@@ -159,16 +164,17 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
         return end;
     }
 
-    private void colorHashTags(@NonNull Tweet tweet) {
-        Spannable tweetBody = new SpannableString(tweet.body);
+    private void colorHashTags(@NonNull Spannable string, Tweet tweet) {
         if (tweet.entity.hashTagIndices != null) {
             for (int[] arr: tweet.entity.hashTagIndices) {
                 for (int index: arr) {
-                    ;
+                    // can also make the text clickable
+                    string.setSpan(new ForegroundColorSpan(context.getColor(R.color.twitter_blue)),
+                            index, getWordLastCharIndex(string, index),
+                            Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                 }
             }
         }
-
     }
 
     private void displayGif(Context context, String imageUrl, ImageView targetImageView) {

@@ -210,5 +210,6 @@ Organized by: Willie Tsang
     <!-- z -->
 
     <color name="RedHighlight">#99FF0000</color>
+    <color name="twitter_blue">#FF1DA1F2</color>
 
 </resources>
