@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.apps.erastustweet.models.Tweet;
+import com.codepath.apps.erastustweet.utilities.TweetEditTextBehavior;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.json.JSONException;
@@ -49,74 +50,10 @@ public class ComposeActivity extends AppCompatActivity {
         mComposeTweetButton = (Button) findViewById(R.id.button_compose_tweet);
         mComposeTweetEditText = (EditText) findViewById(R.id.edit_text_compose_tweet);
 
-        setComposeTweetEditTextBehaviour();
+        TweetEditTextBehavior.setComposeTweetEditTextBehaviour(this,
+                mComposeTweetEditText, mCharCountTextView, mComposeTweetButton);
         setComposeTweetButtonBehavior();
 
-    }
-
-    private void setComposeTweetEditTextBehaviour() {
-        mComposeTweetEditText.addTextChangedListener(new TextWatcher() {
-            // to prevent an infinite loop because TextWatcher is called
-            // again inside the afterTextChanged method
-            private boolean mChangedByTextWatcher = false;
-
-            // This method is called to notify you that, within s,
-            // the count characters beginning at start are about to be replaced
-            // by new text with length after.
-            // It is an error to attempt to make changes to s from this callback.
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            // This method is called to notify you that, within s, the count
-            // characters beginning at start have just replaced old text that had length before.
-            // It is an error to attempt to make changes to s from this callback.
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String tweetBody = mComposeTweetEditText.getText().toString().trim();
-                if (tweetBody.length() > MAX_TWEET_CHARS) {
-                    mComposeTweetButton.setEnabled(false);
-                    mCharCountTextView.setTextColor(getColor(R.color.red));
-                    String length = "-" + (s.length() - MAX_TWEET_CHARS);
-                    mCharCountTextView.setText(length);
-
-                } else if (tweetBody.length() == 0) {
-                    mComposeTweetButton.setEnabled(false);
-                    mCharCountTextView.setTextColor(getColor(R.color.green));
-                    mCharCountTextView.setText(getString(R.string.zero));
-                } else {
-                    mComposeTweetButton.setEnabled(true);
-                    mCharCountTextView.setTextColor(getColor(R.color.green));
-                    mCharCountTextView.setText(String.valueOf(s.length()));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0) {
-                    if (s.toString().trim().length() > MAX_TWEET_CHARS) {
-                        if (mChangedByTextWatcher) {
-                            return;
-                        }
-                        mChangedByTextWatcher = true;
-
-                        // cursor position will be reset to 0, so save it
-                        int cursorPosition = mComposeTweetEditText.getSelectionStart();
-
-                        Spannable tweetColored = new SpannableString(s);
-                        tweetColored.setSpan(new BackgroundColorSpan(getColor(R.color.RedHighlight)),
-                                MAX_TWEET_CHARS, s.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-
-                        mComposeTweetEditText.setText(tweetColored);
-
-                        mComposeTweetEditText.setSelection(cursorPosition);
-
-                        // release, so the TextWatcher can start to listen again.
-                        mChangedByTextWatcher = false;
-                    }
-                }
-            }
-        });
     }
 
     private void setComposeTweetButtonBehavior() {

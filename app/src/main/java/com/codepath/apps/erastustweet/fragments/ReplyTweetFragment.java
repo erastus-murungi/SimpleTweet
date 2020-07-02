@@ -16,6 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.codepath.apps.erastustweet.R;
+import com.codepath.apps.erastustweet.models.Tweet;
+import com.codepath.apps.erastustweet.utilities.TweetEditTextBehavior;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -65,12 +67,21 @@ public class ReplyTweetFragment extends DialogFragment {
 
         mReplyButton = view.findViewById(R.id.btn_reply);
         mCancelTextView = view.findViewById(R.id.tv_cancel);
-        mCharCountTextView = view.findViewById(R.id.text_view_char_count);
+        mCharCountTextView = view.findViewById(R.id.tv_char_count);
         mReplyEditText.requestFocus();
 
         getDialog().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        TweetEditTextBehavior.setComposeTweetEditTextBehaviour(getContext(),
+                mReplyEditText, mCharCountTextView, mReplyButton);
         setReplyButtonBehavior();
+        mCancelTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
     }
 
 
