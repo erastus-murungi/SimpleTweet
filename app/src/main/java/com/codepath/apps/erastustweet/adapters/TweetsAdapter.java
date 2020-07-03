@@ -201,6 +201,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
         Glide.with(context)
                 .load(imageUrl)
                 .fitCenter()
+                .centerCrop()
                 .apply(new RequestOptions()
                         .transform(new RoundedCornersTransformation(30, 0)))
                 .into(targetImageView);

@@ -42,6 +42,7 @@
         android:layout_height="50dp"
         android:layout_below="@id/linear_retweet"
         android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
         android:background="@color/white"
         android:contentDescription="@string/user_screen_name"
         tools:srcCompat="@tools:sample/avatars" />
@@ -117,6 +118,8 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="40dp"
         android:layout_toEndOf="@+id/profilePictureImageView"
+        android:autoLink="all"
+        android:textColorLink="@color/twitter_blue"
         android:background="@color/white"
         android:text="@string/sample_tweet"
         android:textColor="@android:color/black" />
@@ -124,7 +127,7 @@
 
     <RelativeLayout
         android:id="@+id/layout_media"
-        android:layout_width="wrap_content"
+        android:layout_width="290dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_tweet_body"
         android:layout_marginTop="10dp"
