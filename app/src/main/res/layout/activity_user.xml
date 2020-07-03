@@ -8,50 +8,38 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
+        android:layout_height="200dp"
         android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
-        android:layout_height="200dp">
-        
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark">
+
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:expandedTitleMarginStart="15dp"
             app:expandedTitleMarginBottom="20dp"
+            app:expandedTitleMarginStart="15dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <ImageView
                 android:id="@+id/iv_banner"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
+                android:contentDescription="@string/content_description"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax"/>
+                app:layout_collapseMode="parallax" />
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_user"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:alpha="0.5"
-        app:layout_scrollFlags="scroll|enterAlways"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="172dp"
-        android:text="TextView" />
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_user"
-        android:layout_width="match_parent"
-        android:layout_height="537dp"
-        app:contentInsetStart="0dp"
-        app:layout_collapseMode="pin"
-        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

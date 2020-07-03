@@ -119,7 +119,7 @@ public class TimelineActivity extends AppCompatActivity implements ReplyTweetFra
                             try {
                                 Intent userIntent = new Intent(getApplicationContext(), UserActivity.class);
                                 if (json.jsonObject != null) {
-                                    userIntent.putExtra(User.class.getSimpleName(), Parcels.wrap(User.fromJson(json.jsonObject)));
+                                    userIntent.putExtra(UserActivity.class.getSimpleName(), Parcels.wrap(User.fromJson(json.jsonObject)));
                                     Toast.makeText(getApplicationContext(), "Activity Starting", Toast.LENGTH_SHORT).show();
                                     startActivity(userIntent);
                                 }
@@ -134,7 +134,9 @@ public class TimelineActivity extends AppCompatActivity implements ReplyTweetFra
                         }
                         @Override
                         public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                            Log.e(TAG, "Failed to get User object response", throwable);
+                            String msg = "Failed to get User object response";
+                            Log.e(TAG, response, throwable);
+                            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                         }
                     }, sid.id, sid.screenName);
                 }
@@ -218,7 +220,7 @@ public class TimelineActivity extends AppCompatActivity implements ReplyTweetFra
             if (tweet.entity.userMentions != null) {
                 for (UserMention mention : tweet.entity.userMentions) {
                     tagToUserMap.put("@" + mention.screenName,
-                            new ScreenNameId(mention.indices[0], mention.screenName));
+                            new ScreenNameId(mention.id, mention.screenName));
                 }
             }
         }

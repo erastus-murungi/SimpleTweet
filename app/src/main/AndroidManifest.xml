@@ -13,7 +13,9 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <activity android:name=".UserActivity"></activity>
+        <activity android:name=".UserActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:theme="@style/UserAppTheme" android:screenOrientation="portrait"/>
         <activity android:name=".ComposeActivity" />
         <activity android:name=".TimelineActivity" />
         <activity

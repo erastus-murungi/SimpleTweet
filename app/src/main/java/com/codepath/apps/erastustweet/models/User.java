@@ -51,7 +51,7 @@ public class User {
 
     private static String getBannerUrl(JSONObject jsonObject) {
         try {
-            return getBiggerUrl(jsonObject.getString("profile_banner_url"));
+            return jsonObject.getString("profile_banner_url") + "/mobile_retina";
         } catch (JSONException e) {
             Log.e(TAG, "JSON Exception", e);
             return null;

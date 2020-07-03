@@ -31,5 +31,6 @@
     <string name="like">Like</string>
     <string name="replying_to">Replying to %s</string>
     <string name="retweet_icon">Retweet Icon</string>
+    <string name="content_description">Content Description</string>
 
 </resources>

@@ -80,7 +80,7 @@ public class TwitterClient extends OAuthBaseClient {
 	}
 
 	public void getUser(JsonHttpResponseHandler handler, long id, String screenName) {
-		String apiUrl = getApiUrl("statuses/users/show.json");
+		String apiUrl = getApiUrl("users/show.json");
 		RequestParams params = new RequestParams();
 		params.put("user_id", id);
 		params.put("screen_name", screenName);

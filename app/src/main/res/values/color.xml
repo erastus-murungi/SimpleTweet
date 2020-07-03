@@ -7,6 +7,10 @@ Organized by: Willie Tsang
 
     <!-- Android style -->
     <color name="android_green">#A4C639</color>
+    
+    <color name="colorPrimary">@color/twitter_blue</color>
+    <color name="colorPrimaryDark">@color/black</color>
+    <color name="colorAccent">@color/gray</color>
 
     <!-- Android Holo style -->
     <color name="holo_blue_bright">#ff00ddff</color>
