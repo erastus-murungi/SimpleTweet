@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -91,23 +92,26 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
 
     // A ViewHolder describes an item view and metadata about its place within the RecyclerView.
     public class TweetsViewHolder extends RecyclerView.ViewHolder {
-        TextView screenNameTextView, tweetBodyTextView, nameTextView;
+        TextView screenNameTextView, tweetBodyTextView, nameTextView, reTweetTextView;
         ImageView profilePictureImageView, verifiedBadgeImageView;
         VideoView twitterVideoView;
         ImageView twitterImageView;
         Spannable tweetBody;
         ImageButton replyImageButton;
+        LinearLayout linearLayout;
 
         public TweetsViewHolder(@NonNull View itemView) {
             super(itemView);
             screenNameTextView = (TextView) itemView.findViewById(R.id.screenNameTextView);
-            tweetBodyTextView = (TextView) itemView.findViewById(R.id.tweetBodyTextView);
+            tweetBodyTextView = (TextView) itemView.findViewById(R.id.tv_tweet_body);
             nameTextView = (TextView) itemView.findViewById(R.id.nameTextView);
+            reTweetTextView = (TextView)  itemView.findViewById(R.id.tv_retweeted);
             profilePictureImageView = (ImageView) itemView.findViewById(R.id.profilePictureImageView);
             verifiedBadgeImageView = (ImageView) itemView.findViewById(R.id.verifiedBadgeTextView);
             twitterImageView = (ImageView) itemView.findViewById(R.id.image_view_twitter);
             twitterVideoView = (VideoView) itemView.findViewById(R.id.video_view_twitter);
             replyImageButton = (ImageButton) itemView.findViewById(R.id.image_btn_comment);
+            linearLayout = (LinearLayout) itemView.findViewById(R.id.linear_retweet);
         }
 
         public void bind(Tweet tweet) {
@@ -129,8 +133,24 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
                     listener.onItemClicked(getAdapterPosition());
                 }
             });
+            dealWithReTweet(tweet, linearLayout, reTweetTextView);
         }
     }
+
+    private void dealWithReTweet(Tweet tweet, LinearLayout linearLayout, TextView reTweetTextView) {
+        if (tweet.reTweeted) {
+            linearLayout.setVisibility(View.VISIBLE);
+            reTweetTextView.setText(context.getResources().getString(R.string.retweeted,
+                    tweet.user.name));
+        } else {
+            linearLayout.setVisibility(View.GONE);
+        }
+    }
+
+//    private String getUserMentionsFormatted(Tweet tweet) {
+//        for (User: tweet.entity.userMentions) {
+//        }
+//    }
 
     private void displayMedia(@NonNull Tweet tweet, ImageView targetImageView, VideoView videoView) {
         MediaType mediaType = tweet.entity.mediaType;
@@ -156,7 +176,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
             videoView.setVisibility(View.GONE);
             targetImageView.setVisibility(View.GONE);
         }
-
     }
 
     // Display a circular image in an imageView using the Glide Library

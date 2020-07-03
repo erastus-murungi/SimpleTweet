@@ -8,10 +8,39 @@
     android:layout_marginBottom="10dp"
     android:background="@color/white">
 
+    <LinearLayout
+        android:id="@+id/linear_retweet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="5dp"
+            android:background="@color/white"
+            android:contentDescription="@string/retweet_icon"
+            android:src="@drawable/ic_vector_retweet" />
+
+        <TextView
+            android:id="@+id/tv_retweeted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:background="@color/white"
+            android:text="@string/user_name"
+            android:textAlignment="center"
+            android:textColor="@color/DarkGray"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/profilePictureImageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_below="@id/linear_retweet"
         android:layout_marginStart="20dp"
         android:background="@color/white"
         android:contentDescription="@string/user_screen_name"
@@ -21,6 +50,7 @@
         android:id="@+id/userInfoLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/linear_retweet"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="40dp"
         android:layout_toEndOf="@+id/profilePictureImageView"
@@ -63,7 +93,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tweetBodyTextView"
+        android:id="@+id/tv_replied"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/userInfoLinearLayout"
@@ -72,14 +102,31 @@
         android:layout_marginEnd="40dp"
         android:layout_toEndOf="@+id/profilePictureImageView"
         android:background="@color/white"
+        android:ellipsize="middle"
+        android:text="@string/if_retweeted"
+        android:textColor="#3b3b3b"
+        android:visibility="visible" />
+
+
+    <TextView
+        android:id="@+id/tv_tweet_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_replied"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="40dp"
+        android:layout_toEndOf="@+id/profilePictureImageView"
+        android:background="@color/white"
         android:text="@string/sample_tweet"
         android:textColor="@android:color/black" />
+
 
     <RelativeLayout
         android:id="@+id/layout_media"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tweetBodyTextView"
+        android:layout_below="@+id/tv_tweet_body"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="40dp"
         android:layout_toEndOf="@+id/profilePictureImageView"
@@ -111,8 +158,8 @@
         android:layout_width="321dp"
         android:layout_height="20dp"
         android:layout_below="@+id/layout_media"
-        android:layout_alignStart="@+id/tweetBodyTextView"
-        android:layout_alignEnd="@+id/tweetBodyTextView"
+        android:layout_alignStart="@+id/tv_tweet_body"
+        android:layout_alignEnd="@+id/tv_tweet_body"
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="0dp"

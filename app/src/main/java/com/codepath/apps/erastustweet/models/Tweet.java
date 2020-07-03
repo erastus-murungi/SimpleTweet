@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 import org.parceler.Parcel;
 
 
@@ -28,6 +29,7 @@ public class Tweet {
     public User user;
     public long id;
     public TweetEntity entity;
+    public boolean reTweeted;
 
     public Tweet() {
     }
@@ -40,9 +42,18 @@ public class Tweet {
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         tweet.id = jsonObject.getLong("id");
         tweet.entity = TweetEntity.fromJsonArray(jsonObject);
+        tweet.reTweeted = getRetweet(jsonObject);
         return tweet;
     }
 
+    private static boolean getRetweet(JSONObject jsonObject) {
+        try {
+            jsonObject.getJSONObject("retweeted_status");
+            return true;
+        } catch (JSONException e) {
+            return false;
+        }
+    }
     public static List<Tweet> fromJsonArray(JSONArray jsonArray) throws JSONException {
         List<Tweet> tweets = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
