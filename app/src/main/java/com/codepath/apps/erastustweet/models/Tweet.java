@@ -1,7 +1,11 @@
 package com.codepath.apps.erastustweet.models;
 
+import android.content.Context;
 import android.text.format.DateUtils;
 import android.util.Log;
+
+import com.codepath.apps.erastustweet.TwitterApp;
+import com.codepath.apps.erastustweet.TwitterClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +34,7 @@ public class Tweet {
     public long id;
     public TweetEntity entity;
     public boolean reTweeted;
+    public ScreenNameId replyToUser;
 
     public Tweet() {
     }
@@ -43,9 +48,22 @@ public class Tweet {
         tweet.id = jsonObject.getLong("id");
         tweet.entity = TweetEntity.fromJsonArray(jsonObject);
         tweet.reTweeted = getRetweet(jsonObject);
+        tweet.replyToUser = ScreenNameId.fromJson(jsonObject);
         return tweet;
     }
 
+//    private User getReplyToUser(Context context, JSONObject jsonObject, Tweet tweet) {
+//        String name;
+//        Long id;
+//        try {
+//            name = jsonObject.getString("in_reply_to_screen_name");
+//            id = jsonObject.getLong("in_reply_to_user_id");
+//        } catch (JSONException e) {
+//            name = null;
+//            id = null;
+//        }
+//        return User.fromIdAndScreenName(TwitterApp.getRestClient(context), id, name, tweet, toReply);
+//    }
     private static boolean getRetweet(JSONObject jsonObject) {
         try {
             jsonObject.getJSONObject("retweeted_status");

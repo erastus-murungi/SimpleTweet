@@ -92,7 +92,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
 
     // A ViewHolder describes an item view and metadata about its place within the RecyclerView.
     public class TweetsViewHolder extends RecyclerView.ViewHolder {
-        TextView screenNameTextView, tweetBodyTextView, nameTextView, reTweetTextView;
+        TextView screenNameTextView, tweetBodyTextView, nameTextView, reTweetTextView, replyTextView;
         ImageView profilePictureImageView, verifiedBadgeImageView;
         VideoView twitterVideoView;
         ImageView twitterImageView;
@@ -106,6 +106,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
             tweetBodyTextView = (TextView) itemView.findViewById(R.id.tv_tweet_body);
             nameTextView = (TextView) itemView.findViewById(R.id.nameTextView);
             reTweetTextView = (TextView)  itemView.findViewById(R.id.tv_retweeted);
+            replyTextView = (TextView) itemView.findViewById(R.id.tv_replied);
             profilePictureImageView = (ImageView) itemView.findViewById(R.id.profilePictureImageView);
             verifiedBadgeImageView = (ImageView) itemView.findViewById(R.id.verifiedBadgeTextView);
             twitterImageView = (ImageView) itemView.findViewById(R.id.image_view_twitter);
@@ -120,6 +121,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
             loadCircularImage(context, tweet.user.profilePictureUrl, profilePictureImageView);
             if (!tweet.user.isVerified) {
                 verifiedBadgeImageView.setVisibility(View.GONE);
+            } else {
+                verifiedBadgeImageView.setVisibility(View.VISIBLE);
             }
             displayMedia(tweet, twitterImageView, twitterVideoView);
             tweetBody = new SpannableStringBuilder(tweet.body);
@@ -134,6 +137,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
                 }
             });
             dealWithReTweet(tweet, linearLayout, reTweetTextView);
+            dealWithReply(tweet, replyTextView);
         }
     }
 
@@ -147,10 +151,16 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
         }
     }
 
-//    private String getUserMentionsFormatted(Tweet tweet) {
-//        for (User: tweet.entity.userMentions) {
-//        }
-//    }
+    private void dealWithReply(Tweet tweet, TextView replyTextView) {
+        if (tweet.replyToUser != null) {
+            replyTextView.setVisibility(View.VISIBLE);
+            replyTextView.setText(context.getResources().getString(R.string.replying_to,
+                    "@" + tweet.user.name));
+        } else {
+            replyTextView.setVisibility(View.GONE);
+        }
+    }
+
 
     private void displayMedia(@NonNull Tweet tweet, ImageView targetImageView, VideoView videoView) {
         MediaType mediaType = tweet.entity.mediaType;

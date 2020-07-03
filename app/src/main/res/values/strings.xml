@@ -29,7 +29,7 @@
     <string name="comment">Comment</string>
     <string name="share">Share</string>
     <string name="like">Like</string>
-    <string name="if_retweeted">Replying to %s</string>
+    <string name="replying_to">Replying to %s</string>
     <string name="retweet_icon">Retweet Icon</string>
 
 </resources>

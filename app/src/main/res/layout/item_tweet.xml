@@ -103,7 +103,7 @@
         android:layout_toEndOf="@+id/profilePictureImageView"
         android:background="@color/white"
         android:ellipsize="middle"
-        android:text="@string/if_retweeted"
+        android:text="@string/replying_to"
         android:textColor="#3b3b3b"
         android:visibility="visible" />
 
