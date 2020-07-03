@@ -14,7 +14,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
@@ -34,13 +33,21 @@ import java.util.regex.Pattern;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsViewHolder> {
+
+    public static final String TAG = "TweetsAdapter";
+
     private Context context;
     private List<Tweet> tweets;
     private EndlessRecyclerViewScrollListener mOnScrollListener;
     private OnClickListener listener;
+    private OnUserTagClickedListener onUserTagClickedListener;
 
     public interface OnClickListener {
         void onItemClicked(int position);
+    }
+
+    public interface OnUserTagClickedListener {
+        void onItemClicked(String tag);
     }
 
     public TweetsAdapter(Context context, List<Tweet> tweets) {
@@ -50,12 +57,14 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
 
     public TweetsAdapter(Context context, List<Tweet> tweets,
                          EndlessRecyclerViewScrollListener onScrollListener,
-                         OnClickListener listener) {
+                         OnClickListener listener,
+                         OnUserTagClickedListener onUserTagClickedListener) {
 
         this.context = context;
         this.tweets = tweets;
         this.mOnScrollListener = onScrollListener;
         this.listener = listener;
+        this.onUserTagClickedListener = onUserTagClickedListener;
     }
 
     // For each row, inflate the layout
@@ -118,7 +127,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
         public void bind(Tweet tweet) {
             screenNameTextView.setText(String.format("@%s \u00B7 %s", tweet.user.screenName, tweet.createdAt));
             nameTextView.setText(tweet.user.name);
-            loadCircularImage(context, tweet.user.profilePictureUrl, profilePictureImageView);
+            loadCircularImage(context, tweet.user.profileImageUrl, profilePictureImageView);
             if (!tweet.user.isVerified) {
                 verifiedBadgeImageView.setVisibility(View.GONE);
             } else {
@@ -127,9 +136,9 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
             displayMedia(tweet, twitterImageView, twitterVideoView);
             tweetBody = new SpannableStringBuilder(tweet.body);
             colorHashTags(tweetBody, tweet);
-            colorUserMentions(tweetBodyTextView);
             tweetBodyTextView.setText(tweetBody);
             tweetBodyTextView.setMovementMethod(LinkMovementMethod.getInstance());
+            colorUserMentions(tweetBodyTextView);
             replyImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -210,7 +219,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
     // get the index of the last character of a word starting index `start`
     private int getWordLastCharIndex(CharSequence sequence, int start) {
         int end = start;
-        Log.i("Adapter", "Character: " + sequence.charAt(start));
+        Log.i(TAG, "Character: " + sequence.charAt(start));
         while (end < sequence.length() && !Character.isWhitespace(sequence.charAt(end++))) ;
         return end;
     }
@@ -230,12 +239,11 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsView
 
     private void colorUserMentions(@NonNull TextView textView) {
         new PatternEditableBuilder().
-                addPattern(Pattern.compile("@(\\w+)"), context.getColor(R.color.twitter_blue),
+                addPattern(Pattern.compile("@(\\w+)"), context.getColor(R.color.twitter_blue), false,
                         new PatternEditableBuilder.SpannableClickedListener() {
                             @Override
                             public void onSpanClicked(String text) {
-                                Toast.makeText(context, "Clicked username: " + text,
-                                        Toast.LENGTH_SHORT).show();
+                                    onUserTagClickedListener.onItemClicked(text);
                             }
                         }).into(textView);
     }

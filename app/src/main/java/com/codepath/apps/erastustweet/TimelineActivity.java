@@ -18,15 +18,19 @@ import android.widget.Toast;
 
 import com.codepath.apps.erastustweet.adapters.TweetsAdapter;
 import com.codepath.apps.erastustweet.fragments.ReplyTweetFragment;
+import com.codepath.apps.erastustweet.models.ScreenNameId;
 import com.codepath.apps.erastustweet.models.Tweet;
+import com.codepath.apps.erastustweet.models.User;
+import com.codepath.apps.erastustweet.models.UserMention;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import okhttp3.Headers;
@@ -35,6 +39,7 @@ public class TimelineActivity extends AppCompatActivity implements ReplyTweetFra
     public static final String TAG = "TimelineActivity";
     public static final int REQUEST_CODE = 20;
     public static final long TIME_INTERVAL = 2000L;
+    public Map<String, ScreenNameId> tagToUserMap;
 
     private long mBackPressed = 0L;
 
@@ -66,8 +71,9 @@ public class TimelineActivity extends AppCompatActivity implements ReplyTweetFra
 
         mTwitterClient = TwitterApp.getRestClient(this);
         mTweets = new ArrayList<>();
+        tagToUserMap = new Hashtable<>();
         mTweetsAdapter = new TweetsAdapter(this, mTweets,
-                scrollListener, getTweetClickListener());
+                scrollListener, getTweetClickListener(), getOnUserTagClickedListener());
 
         mTimelineRecyclerViewer.setLayoutManager(layoutManager);
         mTimelineRecyclerViewer.setAdapter(mTweetsAdapter);
@@ -95,6 +101,47 @@ public class TimelineActivity extends AppCompatActivity implements ReplyTweetFra
         populateHomeTimeline();
     }
 
+    private TweetsAdapter.OnUserTagClickedListener getOnUserTagClickedListener() {
+        return new TweetsAdapter.OnUserTagClickedListener() {
+            @Override
+            public void onItemClicked(String tag) {
+                ScreenNameId sid = tagToUserMap.get(tag);
+                if (sid == null) {
+                    final String msg = "Cannot access user page";
+                    Log.e(TAG, msg);
+                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    mTwitterClient.getUser(new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Headers headers, JSON json) {
+                            // start a new intent
+                            try {
+                                Intent userIntent = new Intent(getApplicationContext(), UserActivity.class);
+                                if (json.jsonObject != null) {
+                                    userIntent.putExtra(User.class.getSimpleName(), Parcels.wrap(User.fromJson(json.jsonObject)));
+                                    Toast.makeText(getApplicationContext(), "Activity Starting", Toast.LENGTH_SHORT).show();
+                                    startActivity(userIntent);
+                                }
+                                else {
+                                    Toast.makeText(getApplicationContext(), "OK", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                final String msg = "Failed to get User object response";
+                                Log.e(TAG, msg, e);
+                                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        @Override
+                        public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                            Log.e(TAG, "Failed to get User object response", throwable);
+                        }
+                    }, sid.id, sid.screenName);
+                }
+            }
+        };
+    }
+
     private TweetsAdapter.OnClickListener getTweetClickListener() {
         return new TweetsAdapter.OnClickListener() {
             @Override
@@ -117,7 +164,9 @@ public class TimelineActivity extends AppCompatActivity implements ReplyTweetFra
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 try {
                     Log.i(TAG, "More tweets loaded");
-                    mTweetsAdapter.addAll(Tweet.fromJsonArray(json.jsonArray));
+                    List<Tweet> tweets = Tweet.fromJsonArray(json.jsonArray);
+                    mTweetsAdapter.addAll(tweets);
+                    addUsersToMap(tweets);
                 } catch (JSONException e) {
                     Log.e(TAG, "Json Exception", e);
                 }
@@ -163,16 +212,29 @@ public class TimelineActivity extends AppCompatActivity implements ReplyTweetFra
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private void addUsersToMap(List<Tweet> tweets) {
+        for (Tweet tweet: tweets) {
+            tagToUserMap.put("@" + tweet.user.screenName, tweet.user.screenNameId);
+            if (tweet.entity.userMentions != null) {
+                for (UserMention mention : tweet.entity.userMentions) {
+                    tagToUserMap.put("@" + mention.screenName,
+                            new ScreenNameId(mention.indices[0], mention.screenName));
+                }
+            }
+        }
+    }
+
     private void populateHomeTimeline() {
         mTwitterClient.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 Log.i(TAG, "Json Success!");
-                JSONArray jsonArray = json.jsonArray;
                 try {
                     Log.i(TAG, "Content" + json.toString());
                     mTweetsAdapter.clear();
-                    mTweetsAdapter.addAll(Tweet.fromJsonArray(jsonArray));
+                    List<Tweet> tweets = Tweet.fromJsonArray(json.jsonArray);
+                    mTweetsAdapter.addAll(tweets);
+                    addUsersToMap(tweets);
 
                     // refreshing is finished and so we no longer need to show `loading` indicator
                     mTimelineSwipeRefresh.setRefreshing(false);
@@ -220,6 +282,6 @@ public class TimelineActivity extends AppCompatActivity implements ReplyTweetFra
                     public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                         Log.e(TAG, "Couldn't publish reply tweet", throwable);
                     }
-                }, tweet.id, "@"+tweet.user.screenName);
+                }, tweet.id, "@" + tweet.user.screenName);
     }
 }

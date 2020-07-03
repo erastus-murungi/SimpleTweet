@@ -68,7 +68,6 @@ public class TwitterClient extends OAuthBaseClient {
 		RequestParams params = new RequestParams();
 		params.put("status", username + " " + tweetBody);
 		params.put("in_reply_to_status_id", tweetId);
-//		params.put("username", username);
 		client.post(apiUrl, params, "", handler);
 	}
 
@@ -81,7 +80,7 @@ public class TwitterClient extends OAuthBaseClient {
 	}
 
 	public void getUser(JsonHttpResponseHandler handler, long id, String screenName) {
-		String apiUrl = getApiUrl("statuses/home_timeline.json");
+		String apiUrl = getApiUrl("statuses/users/show.json");
 		RequestParams params = new RequestParams();
 		params.put("user_id", id);
 		params.put("screen_name", screenName);

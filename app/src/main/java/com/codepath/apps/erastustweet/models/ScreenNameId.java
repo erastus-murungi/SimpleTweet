@@ -11,6 +11,11 @@ public class ScreenNameId {
     public long id;
     public String screenName;
 
+    public ScreenNameId(long id, String screenName) {
+        this.id = id;
+        this.screenName = screenName;
+    }
+
     public ScreenNameId() {}
 
     public static ScreenNameId fromJson(JSONObject jsonObject) {

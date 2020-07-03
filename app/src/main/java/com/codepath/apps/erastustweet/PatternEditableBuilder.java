@@ -8,6 +8,8 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.TextView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,12 +56,15 @@ public class PatternEditableBuilder {
        Used to style a particular category of spans */
     public static abstract class SpannableStyleListener {
         public int spanTextColor;
+        public boolean isUnderlined;
 
         public SpannableStyleListener() {
         }
 
-        public SpannableStyleListener(int spanTextColor) {
+        public SpannableStyleListener(int spanTextColor, boolean isUnderlined) {
             this.spanTextColor = spanTextColor;
+            this.isUnderlined = isUnderlined;
+
         }
 
         abstract void onSpanStyled(TextPaint ds);
@@ -83,7 +88,7 @@ public class PatternEditableBuilder {
         }
 
         @Override
-        public void updateDrawState(TextPaint ds) {
+        public void updateDrawState(@NotNull TextPaint ds) {
             if (item.styles != null) {
                 item.styles.onSpanStyled(ds);
             }
@@ -116,34 +121,15 @@ public class PatternEditableBuilder {
         return this;
     }
 
-    public PatternEditableBuilder addPattern(Pattern pattern, SpannableStyleListener spanStyles) {
-        addPattern(pattern, spanStyles, null);
-        return this;
-    }
-
-    public PatternEditableBuilder addPattern(Pattern pattern) {
-        addPattern(pattern, null, null);
-        return this;
-    }
-
-    public PatternEditableBuilder addPattern(Pattern pattern, int textColor) {
-        addPattern(pattern, textColor, null);
-        return this;
-    }
-
-    public PatternEditableBuilder addPattern(Pattern pattern, int textColor, SpannableClickedListener listener) {
-        SpannableStyleListener styles = new SpannableStyleListener(textColor) {
+    public PatternEditableBuilder addPattern(Pattern pattern, int textColor, boolean isUnderlined, SpannableClickedListener listener) {
+        SpannableStyleListener styles = new SpannableStyleListener(textColor, isUnderlined) {
             @Override
             public void onSpanStyled(TextPaint ds) {
                 ds.linkColor = this.spanTextColor;
+                ds.setUnderlineText(false);
             }
         };
         addPattern(pattern, styles, listener);
-        return this;
-    }
-
-    public PatternEditableBuilder addPattern(Pattern pattern, SpannableClickedListener listener) {
-        addPattern(pattern, null, listener);
         return this;
     }
 
